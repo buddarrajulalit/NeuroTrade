@@ -1,0 +1,37 @@
+# ─── Dependencies ───
+**/node_modules/
+**/dist/
+**/build/
+
+# ─── Environment ───
+.env
+.env.local
+.env.*.local
+
+# ─── Java / Maven ───
+**/target/
+*.class
+*.jar
+*.war
+*.log
+**/.mvn/wrapper/maven-wrapper.jar
+
+# ─── IDE ───
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+.settings/
+
+# ─── OS ───
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# ─── Misc ───
+*.bak
+*.tmp
