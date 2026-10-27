@@ -9,6 +9,7 @@ import PortfolioPage from './pages/PortfolioPage';
 import SettingsPage from './pages/SettingsPage';
 import AiInsightsPage from './pages/AiInsightsPage';
 import TransactionsPage from './pages/TransactionsPage';
+import TradingTerminalPage from './pages/TradingTerminalPage';
 import AppLayout from './layouts/AppLayout';
 
 function PrivateRoute({ children }) {
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="ai-insights" element={<AiInsightsPage />} />
         <Route path="transactions" element={<TransactionsPage />} />
         <Route path="settings" element={<SettingsPage />} />
+        <Route path="terminal" element={<TradingTerminalPage />} />
       </Route>
 
       <Route path="/market" element={<AppLayout guestMode />}>

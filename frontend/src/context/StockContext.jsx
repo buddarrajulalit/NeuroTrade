@@ -1,11 +1,17 @@
 import { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { stockApi } from '../services/api';
+import { stockApi, API_BASE_URL } from '../services/api';
 
 const StockContext = createContext(null);
 
-const WS_URL = import.meta.env.VITE_WS_URL || 'http://localhost:8080/ws';
+function resolveWsUrl() {
+    if (import.meta.env.VITE_WS_URL) return import.meta.env.VITE_WS_URL;
+    if (API_BASE_URL) return `${API_BASE_URL}/ws`;
+    return import.meta.env.PROD ? '/ws' : 'http://localhost:8080/ws';
+}
+
+const WS_URL = resolveWsUrl();
 
 export function StockProvider({ children }) {
     const [stocks, setStocks] = useState([]);

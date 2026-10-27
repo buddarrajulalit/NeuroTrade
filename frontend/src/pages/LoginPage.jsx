@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { formatApiError } from '../services/api';
 import toast from 'react-hot-toast';
 import { RiRobot2Line, RiLoader4Line, RiEyeLine, RiEyeOffLine } from 'react-icons/ri';
 
@@ -22,7 +23,7 @@ export default function LoginPage() {
             toast.success('Welcome back!');
             navigate('/app/dashboard');
         } catch (err) {
-            toast.error(err.response?.data?.message || 'Invalid credentials');
+            toast.error(formatApiError(err, 'Invalid credentials'));
         } finally {
             setLoading(false);
         }

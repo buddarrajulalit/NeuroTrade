@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:neurotradetest;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+
+cors:
+  allowed-origins: "http://localhost:5173"
+
+neurotrade:
+  jwt:
+    secret: "TestSecretKeyForUnitTestingOnly123456789012345678901234567890"
+    expiration-ms: 86400000
+    refresh-expiration-ms: 604800000
+  trading:
+    initial-wallet-balance: 100000.00
+  stock:
+    simulation:
+      interval-ms: 1000
+      volatility-base: 0.02
+      trend-strength: 0.001
+  ai:
+    insights:
+      enabled: false
+
+logging:
+  level:
+    com.neurotrade: INFO
+    org.springframework.security: WARN

@@ -1,39 +1,53 @@
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${PORT:${SERVER_PORT:8080}}
 
 spring:
   application:
     name: neurotrade-backend
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:neurotrade}
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:postgres}
+    # Supports full JDBC URL (e.g. Render / Supabase / Neon DATABASE_URL or SPRING_DATASOURCE_URL)
+    # with automatic fallback to individual DB_* parameters for local development
+    url: ${SPRING_DATASOURCE_URL:${DATABASE_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:neurotrade}}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DATABASE_USERNAME:${DB_USER:postgres}}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DATABASE_PASSWORD:${DB_PASSWORD:postgres}}}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
-      minimum-idle: 5
+      minimum-idle: 2
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${HIBERNATE_DDL_AUTO:update}
     show-sql: false
+    open-in-view: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
+        format_sql: false
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: UTC
 
+# Actuator: safe health metrics exposure for Render / Cloud monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when_authorized
+
 neurotrade:
   jwt:
     secret: ${JWT_SECRET:NeuroTradeSecretKey2024!!VeryLongAndSecureBase64EncodedString}
-    expiration-ms: ${JWT_EXPIRATION_MS:86400000}   # 24 hours
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}          # 24 hours
     refresh-expiration-ms: ${JWT_REFRESH_EXP_MS:604800000} # 7 days
 
   stock:
@@ -53,11 +67,12 @@ neurotrade:
       anthropic-api-key: ${ANTHROPIC_API_KEY:}
 
 cors:
-  allowed-origins: ${CORS_ORIGINS:http://localhost:5173,http://localhost:3000}
+  allowed-origins: ${CORS_ORIGINS:https://neurotrade-iota.vercel.app,http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173}
 
 logging:
   level:
-    com.neurotrade: DEBUG
+    com.neurotrade: INFO
     org.springframework.security: WARN
+    org.hibernate: WARN
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

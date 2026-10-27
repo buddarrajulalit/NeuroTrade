@@ -1,14 +1,15 @@
 import { NavLink } from 'react-router-dom';
-import { FiHome, FiTrendingUp, FiPieChart, FiCpu, FiActivity, FiSettings, FiStar } from 'react-icons/fi';
+import { FiHome, FiTrendingUp, FiPieChart, FiCpu, FiActivity, FiSettings, FiStar, FiMonitor } from 'react-icons/fi';
 import { RiRobot2Line } from 'react-icons/ri';
 import { useWatchlist } from '../context/WatchlistContext';
 import { useTheme } from '../context/ThemeContext';
 
 const items = [
     { to: '/app/dashboard', label: 'Dashboard', icon: FiHome },
+    { to: '/app/terminal', label: 'Terminal', icon: FiMonitor, badge: 'LIVE', badgeColor: 'emerald' },
     { to: '/app/market', label: 'Market', icon: FiTrendingUp },
     { to: '/app/portfolio', label: 'Portfolio', icon: FiPieChart },
-    { to: '/app/ai-insights', label: 'AI Insights', icon: FiCpu },
+    { to: '/app/ai-insights', label: 'AI Insights', icon: FiCpu, badge: 'AI', badgeColor: 'purple' },
     { to: '/app/transactions', label: 'Transactions', icon: FiActivity },
     { to: '/app/settings', label: 'Settings', icon: FiSettings },
 ];
@@ -38,32 +39,36 @@ export default function Sidebar() {
             </div>
 
             <nav className="flex-1 p-3 space-y-1">
-                {items.map(({ to, label, icon: Icon }) => (
-                    <NavLink
-                        key={to}
-                        to={to}
-                        className={({ isActive }) => [
-                            'group flex items-center gap-3 px-4 py-3 rounded-xl',
-                            'text-sm font-medium transition-all duration-200',
-                            isActive
-                                ? 'shadow-sm'
-                                : 'hover:opacity-80',
-                        ].join(' ')}
-                        style={({ isActive }) => ({
-                            background: isActive ? 'var(--accent-soft)' : 'transparent',
-                            color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
-                            border: isActive ? '1px solid var(--border-active)' : '1px solid transparent',
-                        })}
-                    >
-                        <Icon className="text-lg transition-colors" style={{ color: 'inherit' }} />
-                        <span className="truncate">{label}</span>
-                        {label === 'AI Insights' && (
-                            <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-neon-purple/15 text-neon-purple border border-neon-purple/20">
-                                AI
-                            </span>
-                        )}
-                    </NavLink>
-                ))}
+                {items.map(({ to, label, icon: Icon, badge, badgeColor }) => {
+                    const badgeClasses = {
+                        emerald: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+                        purple: 'bg-neon-purple/15 text-neon-purple border-neon-purple/20',
+                    };
+                    return (
+                        <NavLink
+                            key={to}
+                            to={to}
+                            className={({ isActive }) => [
+                                'group flex items-center gap-3 px-4 py-3 rounded-xl',
+                                'text-sm font-medium transition-all duration-200',
+                                isActive ? 'shadow-sm' : 'hover:opacity-80',
+                            ].join(' ')}
+                            style={({ isActive }) => ({
+                                background: isActive ? 'var(--accent-soft)' : 'transparent',
+                                color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
+                                border: isActive ? '1px solid var(--border-active)' : '1px solid transparent',
+                            })}
+                        >
+                            <Icon className="text-lg transition-colors" style={{ color: 'inherit' }} />
+                            <span className="truncate">{label}</span>
+                            {badge && (
+                                <span className={`ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-full border ${badgeClasses[badgeColor] || badgeClasses.purple}`}>
+                                    {badge}
+                                </span>
+                            )}
+                        </NavLink>
+                    );
+                })}
             </nav>
 
             {/* Watchlist Summary */}

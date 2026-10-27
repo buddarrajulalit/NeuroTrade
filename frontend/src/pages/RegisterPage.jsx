@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { formatApiError } from '../services/api';
 import toast from 'react-hot-toast';
 import { RiRobot2Line, RiLoader4Line, RiEyeLine, RiEyeOffLine } from 'react-icons/ri';
 
@@ -46,15 +47,7 @@ export default function RegisterPage() {
             toast.success('Account created! $100,000 virtual cash credited 🎉');
             navigate('/app/dashboard');
         } catch (err) {
-            const data = err.response?.data;
-            const msg = typeof data?.message === 'string' ? data.message : (typeof data === 'string' ? data : null);
-            if (msg) {
-                toast.error(msg);
-            } else if (err.response) {
-                toast.error(`Registration failed (${err.response.status})`);
-            } else {
-                toast.error('Cannot reach server. Is the backend running at http://localhost:8080?');
-            }
+            toast.error(formatApiError(err, 'Registration failed'));
             console.error('Registration error:', err.response?.data ?? err.message, err);
         } finally {
             setLoading(false);

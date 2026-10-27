@@ -1,25 +1,26 @@
 # NeuroTrade – AI Virtual Stock Market 🚀
 
-> A production-grade, full-stack virtual trading platform powered by a real-time simulation engine and AI market analysis.
+> A production-grade, full-stack virtual trading platform powered by a real-time simulation engine, TradingView candlestick charts, and AI market analysis.
 
-![NeuroTrade Banner](https://img.shields.io/badge/NeuroTrade-AI%20Stock%20Market-00c9ff?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJMMiAyMmgyMEwxMiAyeiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.3-6DB33F?style=flat-square&logo=springboot)
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?style=flat-square&logo=postgresql)
-![WebSocket](https://img.shields.io/badge/WebSocket-STOMP-00c9ff?style=flat-square)
+![TradingView](https://img.shields.io/badge/Charts-Lightweight--Charts-00c9ff?style=flat-square)
+![Vercel](https://img.shields.io/badge/Frontend-Vercel-black?style=flat-square&logo=vercel)
 
 ---
 
 ## 🎯 Overview
 
-**NeuroTrade** is a hackathon/portfolio-grade virtual stock trading platform featuring:
+**NeuroTrade** is a professional virtual stock trading terminal featuring:
 
-- 🔴 **Live price simulation** — 15+ stocks updated every second using Geometric Brownian Motion
-- 🤖 **AI market analyst** — Rule-based insights engine (pluggable to GPT/Claude)
-- 💼 **Full portfolio management** — Holdings, P&L, win-rate, sector allocation
-- 🔐 **JWT authentication** — Spring Security with role-based access (USER / ADMIN / GUEST)
-- 📡 **WebSocket streaming** — Live price broadcast via STOMP/SockJS
-- 📊 **Premium dark UI** — Glassmorphism, neon indicators, animated charts
+- 📊 **TradingView-Grade Candlestick Charts** — High-performance `lightweight-charts` with SMA, EMA, and RSI overlays
+- 🔴 **Live Price Simulation** — 15+ stocks streaming price movements and order book depth
+- 🤖 **AI Market Signals** — Real-time Buy/Sell signal generation with confidence score overlays
+- 💼 **Full Portfolio Management** — Holdings, P&L, transaction history, and asset allocation
+- 🔐 **JWT Authentication** — Spring Security 6 with stateless sessions and BCrypt password encryption
+- 📡 **Live Market Data** — High-frequency streaming and WebSocket capabilities
+- 🎨 **Dark Theme Interface** — Glassmorphism, neon badges, and fluid Framer Motion animations
 
 ---
 
@@ -27,256 +28,129 @@
 
 ```
 neurotrade/
-├── backend/                     # Spring Boot 3 application
-│   └── src/main/java/com/neurotrade/
-│       ├── config/              # Security + WebSocket config
-│       ├── controller/          # REST API controllers
-│       ├── service/             # Business logic services
-│       │   ├── AuthService.java
-│       │   ├── StockSimulationService.java  ← GBM price engine
-│       │   ├── TradingService.java          ← Atomic buy/sell
-│       │   └── PortfolioService.java
-│       ├── ai/                  # AI insights engine (pluggable)
-│       ├── model/               # JPA entities
-│       ├── repository/          # Spring Data JPA repos
-│       ├── security/            # JWT filter + provider
-│       ├── dto/                 # Request/response DTOs
-│       └── exception/           # Global error handler
-└── frontend/                    # React + Vite application
+├── backend/                             # Spring Boot 3 Java Backend
+│   ├── src/main/java/com/neurotrade/
+│   │   ├── config/                      # SecurityConfig, WebSocketConfig
+│   │   ├── controller/                  # Auth, Stocks, Portfolio, Trade, AI, Watchlist
+│   │   ├── service/                     # AuthService, StockSimulation, Trading, Portfolio
+│   │   ├── ai/                          # AiInsightsService
+│   │   ├── model/                       # User, Stock, Holding, Transaction, WatchlistItem
+│   │   ├── repository/                  # Spring Data JPA repositories
+│   │   ├── security/                    # JwtAuthenticationFilter, JwtTokenProvider
+│   │   └── exception/                   # GlobalExceptionHandler
+│   ├── src/test/java/com/neurotrade/   # Integration & unit test suites
+│   ├── pom.xml                          # Maven dependencies (Java 17, Spring Boot 3.2.3, Actuator)
+│   ├── Dockerfile                       # Multi-stage production container
+│   └── mvnw / mvnw.cmd                  # Maven wrappers
+└── frontend/                            # React + Vite Frontend
     └── src/
-        ├── context/             # AuthContext, StockContext (WebSocket)
-        ├── services/            # Axios API client
-        ├── layouts/             # AppLayout (sidebar + ticker)
-        ├── pages/               # Landing, Login, Register, Dashboard, Market, Portfolio
-        └── components/          # StockCard, TradeModal, AiInsightsPanel, LiveTicker
+        ├── context/                     # AuthContext, StockContext, WatchlistContext
+        ├── services/                    # api.js (centralized Axios client), priceStream.js
+        ├── components/                  # TradingChart, TradingPanel, OrderBook, RSIChart
+        └── pages/                       # TradingTerminalPage, DashboardPage, MarketPage, PortfolioPage
 ```
 
 ---
 
-## 🚀 Quick Start
+## 💻 Local Development Setup
 
-### Prerequisites
+### 1. Prerequisites
+- **Java 17+**
+- **Maven 3.9+** (or use `./mvnw` inside `backend/`)
+- **Node.js 18+** & **npm**
+- **PostgreSQL 14+** (or Docker)
 
-| Tool         | Version  |
-|--------------|----------|
-| Java         | 17+      |
-| Maven        | 3.9+     |
-| Node.js      | 20+      |
-| PostgreSQL   | 15+      |
-| Docker       | (optional)|
-
----
-
-### Option A: Run with Docker Compose (Recommended)
-
-```bash
-# Clone and start everything
-cd neurotrade
-docker-compose up --build
-```
-
-- Frontend → http://localhost:5173
-- Backend  → http://localhost:8080
-- DB       → localhost:5432
-
----
-
-### Option B: Run Locally
-
-#### 1. PostgreSQL Setup
-
+### 2. Local Database
 ```sql
 CREATE DATABASE neurotrade;
 CREATE USER postgres WITH PASSWORD 'postgres';
 GRANT ALL PRIVILEGES ON DATABASE neurotrade TO postgres;
 ```
 
-#### 2. Backend
-
+### 3. Start Spring Boot Backend
 ```bash
 cd backend
-
-# Configure environment (or set in application.yml)
-export DB_HOST=localhost
-export DB_NAME=neurotrade
-export DB_USER=postgres
-export DB_PASSWORD=postgres
-export JWT_SECRET=NeuroTradeSecretKey2024!!VeryLongAndSecureBase64EncodedString
-
-mvn clean install -DskipTests
-mvn spring-boot:run
+mvn clean spring-boot:run
 ```
+The backend starts locally at `http://localhost:8080`.
+Verify health: `http://localhost:8080/actuator/health` (returns `{"status":"UP"}`).
 
-Backend runs at → **http://localhost:8080**
-
-#### 3. Frontend
-
+### 4. Start React Frontend
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-
-Frontend runs at → **http://localhost:5173**
+Frontend runs locally at `http://localhost:5173`.
 
 ---
 
-## 🔌 API Reference
+## 🌐 Production Deployment Guide
 
-### Auth
-| Method | Endpoint              | Auth | Description        |
-|--------|-----------------------|------|--------------------|
-| POST   | `/api/auth/register`  | ❌   | Register new user  |
-| POST   | `/api/auth/login`     | ❌   | Login + get token  |
+### A. Deploy Backend to Render (or Railway / AWS / Heroku)
 
-### Stocks
-| Method | Endpoint                    | Auth | Description         |
-|--------|-----------------------------|------|---------------------|
-| GET    | `/api/stocks/public`        | ❌   | All stocks (guest)  |
-| GET    | `/api/stocks`               | ✅   | All stocks          |
-| GET    | `/api/stocks/{symbol}`      | ✅   | Single stock        |
+1. Connect your GitHub repository to [Render](https://render.com).
+2. Create a new **Web Service**:
+   - **Root Directory**: `backend`
+   - **Environment**: `Java` (or `Docker`)
+   - **Build Command**: `./mvnw clean package -DskipTests`
+   - **Start Command**: `java -Dserver.port=${PORT:-8080} -jar target/neurotrade-backend-1.0.0.jar`
+3. Provision a **PostgreSQL Database** on Render (or Supabase / Neon).
+4. Configure Environment Variables in the Render Dashboard:
+   ```env
+   DATABASE_URL=jdbc:postgresql://<db-host>:<db-port>/<db-name>
+   DATABASE_USERNAME=<db-user>
+   DATABASE_PASSWORD=<db-password>
+   JWT_SECRET=<generate-a-strong-256-bit-secret>
+   CORS_ORIGINS=https://neurotrade-iota.vercel.app
+   ```
+5. Deploy and obtain your backend URL: e.g. `https://neurotrade-backend.onrender.com`.
+6. Verify deployment:
+   ```bash
+   curl https://<your-backend-domain>/actuator/health
+   # Expected: {"status":"UP"}
+   ```
 
-### Trading
-| Method | Endpoint              | Auth | Description          |
-|--------|-----------------------|------|----------------------|
-| POST   | `/api/trade/execute`  | ✅   | Execute BUY/SELL     |
+### B. Deploy Frontend to Vercel
 
-### Portfolio
-| Method | Endpoint                          | Auth | Description            |
-|--------|-----------------------------------|------|------------------------|
-| GET    | `/api/portfolio/summary`          | ✅   | Full portfolio summary |
-| GET    | `/api/portfolio/transactions`     | ✅   | Transaction history    |
-| GET    | `/api/portfolio/allocation`       | ✅   | Sector allocation      |
+1. In the [Vercel Dashboard](https://vercel.com), select your `neurotrade` project.
+2. Go to **Settings > General**:
+   - **Root Directory**: `.` (or set build command to `cd frontend && npm install && npm run build`)
+   - **Output Directory**: `frontend/dist`
+   - **Framework Preset**: `Vite`
+3. Go to **Settings > Environment Variables** and add:
+   ```env
+   VITE_API_BASE_URL=https://<your-deployed-backend-domain>
+   ```
+   *(e.g., `https://neurotrade-backend.onrender.com` - do NOT include a trailing slash)*
+4. Trigger a **Redeploy** on Vercel.
 
-### AI
-| Method | Endpoint            | Auth | Description           |
-|--------|---------------------|------|-----------------------|
-| GET    | `/api/ai/insights`  | ✅   | AI portfolio analysis |
+---
 
-### WebSocket
+## 🔧 Troubleshooting Guide
+
+| Issue | Cause | Resolution |
+|---|---|---|
+| **"Cannot connect to the server at..."** on Vercel | `VITE_API_BASE_URL` is missing or points to `localhost` | Set `VITE_API_BASE_URL` to your live HTTPS backend URL in Vercel Project Settings and redeploy. |
+| **CORS error in browser console** | Backend does not allow the frontend origin | Ensure `CORS_ORIGINS` on the backend includes `https://neurotrade-iota.vercel.app` (comma-separated, no trailing slash). |
+| **Registration fails (400 Bad Request)** | Duplicate username/email or password < 6 chars | Check backend response message; usernames must be >= 3 characters, passwords >= 6 characters. |
+| **401 Unauthorized on protected routes** | Expired or missing JWT token | Log in again to obtain a fresh token. The frontend interceptor handles automatic token attachment and 401 redirection. |
+| **Database connection refused on startup** | PostgreSQL is unreachable or credentials invalid | Verify `DATABASE_URL`, `DATABASE_USERNAME`, and `DATABASE_PASSWORD`. Ensure PostgreSQL is running and accessible. |
+| **Vercel 404 on page refresh** | SPA routing not rewrote to index.html | `vercel.json` contains SPA rewrite rules redirecting client-side routes to `/index.html`. |
+
+---
+
+## 🧪 Testing
+
+Run backend tests:
+```bash
+cd backend
+mvn test
 ```
-Connect:    ws://localhost:8080/ws  (SockJS)
-Subscribe:  /topic/stocks           (live price updates every 1s)
+*Executes all 5 automated integration tests including Actuator health, JWT authentication, and duplicate user rejection using in-memory H2.*
+
+Run frontend production build verification:
+```bash
+cd frontend
+npm run build
 ```
-
----
-
-## 🤖 AI Insights Engine
-
-The AI module (`AiInsightsService`) is **pluggable**:
-
-```java
-// Current: rule-based
-analyzePortfolio() → rule-based metrics
-
-// Future: swap implementation
-analyzePortfolio() → openAiClient.complete(prompt)
-analyzePortfolio() → anthropicClient.message(prompt)
-```
-
-**Output schema:**
-```json
-{
-  "sentiment":        "bullish",
-  "confidence":       0.78,
-  "advice":           "Portfolio is balanced. Monitor sector concentrations.",
-  "riskScore":        42,
-  "portfolioHealth":  "GOOD",
-  "traderSkill": {
-    "winRate":          62.5,
-    "discipline":       80,
-    "riskScore":        42,
-    "totalTrades":      8,
-    "profitableTrades": 5
-  },
-  "marketSignals": [
-    { "symbol": "NVDA", "signal": "TAKE_PROFIT", "strength": "STRONG", "pnlPct": 12.4 }
-  ],
-  "aiModel": "rule-based"
-}
-```
-
----
-
-## 📈 Stock Simulation Engine
-
-Prices are updated every **1 second** using **Geometric Brownian Motion**:
-
-```
-newPrice = prevPrice × e^(trend + meanReversion + volatility × Z)
-```
-
-Where:
-- `Z ~ N(0,1)` — Gaussian random shock
-- `trend` — persistent directional bias (mutates slowly)
-- `meanReversion` — pulls price toward opening value (prevents runaway)
-- `volatility` — per-stock volatility factor (COIN=6%, TSLA=4.5%, MSFT=1.5%)
-
----
-
-## 🎨 UI Features
-
-| Feature                | Description                                        |
-|------------------------|----------------------------------------------------|
-| Live Ticker Bar        | Scrolling marquee of all 15 stocks                 |
-| Price Flash Animations | Green/red cell flash on price change               |
-| Glassmorphism Cards    | Frosted glass effect on all panels                 |
-| Neon Indicators        | Green gains, red losses with glow effects          |
-| Sector Pills           | Filter stocks by sector                            |
-| Portfolio Heatmap      | Color-coded bar chart of position P&L              |
-| AI Panel               | Sentiment badge, confidence meter, skill bars      |
-| Day Range Bar          | Mini progress bar showing intraday price range     |
-
----
-
-## 🔐 Security
-
-- **Passwords**: BCrypt (strength 12)
-- **JWT**: HS256, configurable expiry (default 24h)
-- **No hardcoded credentials** — all via environment variables
-- **CORS**: configurable via `CORS_ORIGINS` env var
-- **Input validation**: Jakarta Bean Validation on all DTOs
-- **Global error handler**: Structured JSON error responses
-
----
-
-## 🧩 Plugin Architecture
-
-The codebase is designed to be extended:
-
-| Plugin Point              | Config                   |
-|---------------------------|--------------------------|
-| LLM AI backend            | `neurotrade.ai.model`    |
-| Real stock price API      | Swap `StockSimulationService.simulatePrices()` |
-| Payment gateway           | Add `PaymentService` interface |
-| Mobile app                | REST API is already mobile-ready |
-| Redis caching             | Add `@Cacheable` to stock/portfolio methods |
-
----
-
-## 🏆 Built For
-
-- ✅ **Hackathons** – Real-time simulation + AI makes it stand out
-- ✅ **Portfolio Projects** – Full production stack (Auth, DB, WS, AI)
-- ✅ **Interviews** – Clean architecture, proper patterns, SOLID principles
-- ✅ **Learning** – Covers JWT, WebSocket, trading algorithms, React Context
-
----
-
-## 📁 Environment Variables
-
-| Variable              | Default                              | Description              |
-|-----------------------|--------------------------------------|--------------------------|
-| `DB_HOST`             | `localhost`                          | PostgreSQL host          |
-| `DB_PORT`             | `5432`                               | PostgreSQL port          |
-| `DB_NAME`             | `neurotrade`                         | Database name            |
-| `DB_USER`             | `postgres`                           | Database user            |
-| `DB_PASSWORD`         | `postgres`                           | Database password        |
-| `JWT_SECRET`          | *(long default)*                     | JWT signing secret       |
-| `JWT_EXPIRATION_MS`   | `86400000`                           | Token lifetime (24h)     |
-| `CORS_ORIGINS`        | `http://localhost:5173`              | Allowed CORS origins     |
-| `OPENAI_API_KEY`      | *(empty)*                            | Optional – for LLM AI    |
-
----
-
-*Built with ❤️ using Spring Boot 3 + React 18 + PostgreSQL + WebSocket*

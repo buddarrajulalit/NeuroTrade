@@ -2,5 +2,11 @@
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
   "installCommand": "echo skipped",
-  "framework": "vite"
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/((?!assets|favicon|.*\\..*).*)",
+      "destination": "/index.html"
+    }
+  ]
 }
