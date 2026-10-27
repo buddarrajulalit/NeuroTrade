@@ -1,0 +1,26 @@
+databases:
+  - name: neurotrade-db
+    databaseName: neurotrade_db
+    user: neurotrade_db_user
+    plan: free
+
+services:
+  - type: web
+    name: neurotrade-backend
+    runtime: java
+    plan: free
+    rootDir: backend
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -Dserver.port=${PORT:-8080} -jar target/neurotrade-backend-1.0.0.jar
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: neurotrade-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://neurotrade-iota.vercel.app,http://localhost:5173
+      - key: HIBERNATE_DDL_AUTO
+        value: update
